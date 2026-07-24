@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "Suomalainen auto-osakauppa.",
   "main": "index.js",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+ "scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "postinstall": "prisma generate",
+
     "lint": "next lint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
