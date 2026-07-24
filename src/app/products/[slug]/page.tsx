@@ -21,8 +21,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-700">{product.brand.name}</p>
             <h1 className="mt-2 text-3xl font-black text-slate-900">{product.name}</h1>
             <p className="mt-4 text-slate-600">{product.description}</p>
-            <div className="mt-6 flex items-center gap-3">
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">{product.category.name}</span>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              {product.category ? (
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">{product.category.name}</span>
+              ) : (
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">Kategoria tuntematon</span>
+              )}
               <span className="rounded-full bg-orange-50 px-3 py-1 text-sm text-orange-600">Varastossa: {product.stock}</span>
             </div>
             <div className="mt-8 rounded-2xl bg-slate-50 p-5">

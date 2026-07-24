@@ -10,7 +10,7 @@ export function SiteHeader() {
         </Link>
         <nav className="hidden gap-5 text-sm font-medium text-slate-600 md:flex">
           <Link href="/products" className="hover:text-blue-700">Tuotteet</Link>
-          <Link href="/categories" className="hover:text-blue-700">Kategoriat</Link>
+          <Link href="/varaosat" className="hover:text-blue-700">Varaosat</Link>
           <Link href="/brands" className="hover:text-blue-700">Merkit</Link>
           <Link href="/contact" className="hover:text-blue-700">Yhteystiedot</Link>
         </nav>

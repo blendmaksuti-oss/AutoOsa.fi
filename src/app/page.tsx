@@ -1,195 +1,305 @@
-import Image from 'next/image';
-import { ArrowRight, Search, ShieldCheck, Truck, Star, Heart, ShoppingCart, Sparkles } from 'lucide-react';
+'use client';
 
-const categories = [
-  { name: 'Moottoriöljyt', icon: '🛢️' },
-  { name: 'Jarrut', icon: '🛑' },
-  { name: 'Akut', icon: '🔋' },
-  { name: 'Kumi', icon: '🛞' },
-  { name: 'Sähkö', icon: '⚡' },
-  { name: 'Korjaus', icon: '🔧' },
-];
+import Link from 'next/link';
+import { useState } from 'react';
+import {
+  ArrowRight,
+  BadgeCheck,
+  BatteryCharging,
+  CarFront,
+  ChevronRight,
+  Droplets,
+  Gauge,
+  Headphones,
+  Lightbulb,
+  Menu,
+  Package2,
+  Search,
+  ShieldCheck,
+  ShoppingCart,
+  Sparkles,
+  Truck,
+  UserRound,
+  Wrench,
+} from 'lucide-react';
+import { CategoryMenu } from '@/components/CategoryMenu';
+import { VehicleSelector } from '@/components/vehicle-selector';
 
 const products = [
-  { name: 'MOBIL 5W-30', price: '39,90 €', badge: 'Suosittu' },
-  { name: 'Bosch Jarrupala', price: '84,90 €', badge: 'Uutuus' },
-  { name: 'Varta 70 Ah Akku', price: '159,90 €', badge: 'Paras hinta' },
+  {
+    brand: 'Bosch',
+    name: 'Jarrulevy 330 mm',
+    partNumber: '0 986 479 120',
+    price: '89,90 €',
+    previousPrice: '109,90 €',
+    compatibility: 'Audi A3 2018',
+    stock: 'Varastossa',
+    icon: ShieldCheck,
+  },
+  {
+    brand: 'MANN-FILTER',
+    name: 'Ilmansuodatin Premium',
+    partNumber: 'C 3212',
+    price: '24,90 €',
+    compatibility: 'Volkswagen Golf',
+    stock: 'Nopea toimitus',
+    icon: Package2,
+  },
+  {
+    brand: 'Castrol',
+    name: 'Edge 5W-30 1 l',
+    partNumber: 'B1',
+    price: '34,90 €',
+    compatibility: 'Monia malleja',
+    stock: 'Uutuus',
+    icon: Droplets,
+  },
 ];
 
-const brands = ['Bosch', 'Mobil', 'Varta', 'Philips', 'NGK', 'Valeo'];
+const brands = ['Bosch', 'Brembo', 'MANN-FILTER', 'SKF', 'NGK', 'Castrol'];
 
-const reviews = [
-  { name: 'Mika', text: 'Nopeaa toimitusta ja laadukkaat varaosat.' },
-  { name: 'Sanna', text: 'Loistava valikoima ja helppo tilata.' },
+const benefits = [
+  { title: 'Nopea toimitus', text: 'Tilaukset käsitellään nopeasti ja toimitus hoidetaan luotettavasti.', icon: Truck },
+  { title: 'Turvallinen maksaminen', text: 'Turvalliset maksutavat ja selkeä tilausprosessi.', icon: ShieldCheck },
+  { title: 'Laaja valikoima', text: 'Ammattilaisille ja tavallisille autoilijoille sopivia osia.', icon: Package2 },
+  { title: 'Helppo palautus', text: 'Palautukset ja asiakaspalvelu ovat selkeät ja joustavat.', icon: BadgeCheck },
 ];
 
 export default function HomePage() {
-  return (
-    <main className="min-h-screen bg-transparent text-slate-900">
-      <section className="mx-auto flex max-w-7xl flex-col gap-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-        <header className="flex items-center justify-between rounded-full border border-slate-200 bg-white/80 px-4 py-3 shadow-sm backdrop-blur">
-          <div>
-            <p className="text-xl font-black text-slate-900">AutoOsa.fi</p>
-            <p className="text-sm text-slate-500">Auton varaosat nopeasti ja luotettavasti</p>
-          </div>
-          <nav className="hidden gap-6 text-sm font-medium text-slate-600 md:flex">
-            <a href="#tuotteet" className="hover:text-blue-700">Tuotteet</a>
-            <a href="#merkit" className="hover:text-blue-700">Merkit</a>
-            <a href="#yhteystiedot" className="hover:text-blue-700">Yhteystiedot</a>
-          </nav>
-        </header>
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-        <section className="grid gap-6 rounded-[2rem] border border-slate-200 bg-slate-950 p-6 text-white shadow-2xl lg:grid-cols-[1.2fr_0.8fr] lg:p-10">
-          <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full bg-orange-500/20 px-3 py-1 text-sm font-semibold text-orange-300">
-              <Sparkles size={16} /> Luotettava varaosakauppa Suomessa
-            </div>
-            <div className="space-y-4">
-              <h1 className="max-w-2xl text-4xl font-black leading-tight sm:text-5xl">
-                Varaosat autoosi — nopeasti, edullisesti, varmasti.
-              </h1>
-              <p className="max-w-xl text-lg text-slate-300">
-                Etsi oikeat osat, vertaa merkkejä ja tilaa turvallisesti. Valikoimassa moottoriöljyt, akut, jarrut ja paljon muuta.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 rounded-2xl bg-white/10 p-3 sm:flex-row">
-              <label className="flex flex-1 items-center gap-2 rounded-xl bg-white px-3 py-3 text-slate-700">
-                <Search size={18} />
-                <input className="w-full bg-transparent outline-none" placeholder="Etsi tuotetta, merkkiä tai osaa" />
+  return (
+    <main className="min-h-screen bg-[#fcfcfb] text-[#111111]">
+      <div className="mx-auto flex max-w-7xl flex-col gap-5 px-3 py-3 sm:px-6 lg:px-8 lg:py-6">
+        <header className="sticky top-3 z-40 rounded-[24px] border border-[#dcefe3] bg-[#0f3d2e] px-3 py-3 text-white shadow-[0_18px_50px_rgba(15,61,46,0.12)] sm:px-4 lg:px-5">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-2 whitespace-nowrap text-lg font-black tracking-tight">
+              <span className="rounded-full bg-white/10 p-2"><CarFront size={18} /></span>
+              <span>AutoOsa.fi</span>
+            </Link>
+
+            <div className="hidden flex-1 lg:flex">
+              <label className="flex w-full items-center gap-2 rounded-full border border-white/15 bg-white px-3 py-2 text-[#111111]">
+                <Search size={18} className="text-[#1f6a45]" />
+                <input
+                  aria-label="Hae varaosaa"
+                  className="w-full bg-transparent text-sm outline-none"
+                  placeholder="Hae varaosaa, tuotenumeroa tai tuotemerkkiä"
+                />
               </label>
-              <button className="rounded-xl bg-orange-500 px-5 py-3 font-semibold text-white transition hover:bg-orange-400">
-                Hae tuotteita
+            </div>
+
+            <div className="ml-auto flex items-center gap-2">
+              <button className="hidden rounded-full border border-white/15 bg-white/10 p-2.5 transition hover:bg-white/20 sm:block" aria-label="Käyttäjätili">
+                <UserRound size={18} />
+              </button>
+              <Link href="/cart" className="relative rounded-full border border-white/15 bg-[#1f6a45] p-2.5 transition hover:bg-[#2ba966]" aria-label="Ostoskori">
+                <ShoppingCart size={18} />
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#8fe3a8] text-[11px] font-black text-[#0f3d2e]">2</span>
+              </Link>
+              <button className="rounded-full border border-white/15 bg-white/10 p-2.5 transition hover:bg-white/20 lg:hidden" aria-label="Avaa valikko" onClick={() => setMobileMenuOpen((open) => !open)}>
+                <Menu size={18} />
               </button>
             </div>
-            <div className="flex flex-wrap gap-4 text-sm text-slate-300">
-              <div className="flex items-center gap-2"><Truck size={18} className="text-orange-400" /> Nopea toimitus</div>
-              <div className="flex items-center gap-2"><ShieldCheck size={18} className="text-orange-400" /> Turvallinen maksu</div>
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center gap-2 lg:hidden">
+            <label className="flex flex-1 items-center gap-2 rounded-full border border-white/15 bg-white px-3 py-2 text-[#111111]">
+              <Search size={18} className="text-[#1f6a45]" />
+              <input
+                aria-label="Hae varaosaa"
+                className="w-full bg-transparent text-sm outline-none"
+                placeholder="Hae varaosaa"
+              />
+            </label>
+          </div>
+
+          <nav className="mt-3 hidden items-center gap-4 text-sm font-medium text-white/90 lg:flex">
+            <Link href="/products" className="transition hover:text-[#8fe3a8]">Tuotteet</Link>
+            <Link href="/varaosat" className="transition hover:text-[#8fe3a8]">Varaosat</Link>
+            <Link href="/brands" className="transition hover:text-[#8fe3a8]">Tuotemerkit</Link>
+            <Link href="/contact" className="transition hover:text-[#8fe3a8]">Asiakaspalvelu</Link>
+          </nav>
+
+          {mobileMenuOpen && (
+            <nav className="mt-3 flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/10 p-3 text-sm font-medium lg:hidden">
+              <Link href="/products" className="rounded-xl px-3 py-2 transition hover:bg-white/10">Tuotteet</Link>
+              <Link href="/varaosat" className="rounded-xl px-3 py-2 transition hover:bg-white/10">Varaosat</Link>
+              <Link href="/brands" className="rounded-xl px-3 py-2 transition hover:bg-white/10">Tuotemerkit</Link>
+              <Link href="/contact" className="rounded-xl px-3 py-2 transition hover:bg-white/10">Asiakaspalvelu</Link>
+            </nav>
+          )}
+        </header>
+
+        <section className="grid gap-5 rounded-[28px] border border-[#dcefe3] bg-white p-4 shadow-[0_16px_40px_rgba(15,61,46,0.06)] sm:p-6 lg:grid-cols-[1.1fr_0.9fr] lg:p-8">
+          <div className="flex flex-col justify-center">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full bg-[#e9f7ee] px-3 py-1 text-sm font-semibold text-[#1f6a45]">
+              <Sparkles size={16} /> Luotettava varaosakauppa Suomessa
+            </div>
+            <h1 className="mt-4 max-w-2xl text-3xl font-black leading-tight text-[#111111] sm:text-4xl lg:text-5xl">
+              Varaosat autoosi helposti
+            </h1>
+            <p className="mt-3 max-w-xl text-base leading-7 text-[#4f5752] sm:text-lg">
+              Löydä sopivat varaosat nopeasti rekisterinumerolla, auton tiedoilla tai tuotehaulla.
+            </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link href="/products" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#1f6a45] px-5 py-3 font-semibold text-white transition hover:bg-[#0f3d2e]">
+                Etsi varaosia <ArrowRight size={18} />
+              </Link>
+              <Link href="/varaosat" className="inline-flex items-center justify-center gap-2 rounded-full border border-[#dcefe3] bg-[#f5f7f3] px-5 py-3 font-semibold text-[#0f3d2e] transition hover:bg-white">
+                Selaa varaosakategorioita <ChevronRight size={18} />
+              </Link>
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3 text-sm text-[#4f5752]">
+              <div className="flex items-center gap-2 rounded-full bg-[#f5f7f3] px-3 py-2">
+                <Truck size={16} className="text-[#1f6a45]" /> Nopea käsittely
+              </div>
+              <div className="flex items-center gap-2 rounded-full bg-[#f5f7f3] px-3 py-2">
+                <ShieldCheck size={16} className="text-[#1f6a45]" /> Turvallinen tilaus
+              </div>
             </div>
           </div>
-          <div className="rounded-[1.5rem] bg-gradient-to-br from-blue-700 to-cyan-600 p-6">
-            <div className="rounded-[1.25rem] border border-white/20 bg-white/10 p-5 backdrop-blur">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-100">Tämän viikon tarjoukset</p>
+
+          <div className="rounded-[24px] bg-[#0f3d2e] p-5 text-white">
+            <div className="rounded-[20px] border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8fe3a8]">Tämä viikko</p>
               <div className="mt-4 space-y-3">
-                <div className="rounded-xl bg-white/90 p-4 text-slate-900">
-                  <p className="text-sm text-slate-500">Jarrut</p>
-                  <p className="text-xl font-black">-20 %</p>
+                <div className="rounded-2xl bg-white p-4 text-[#111111]">
+                  <p className="text-sm text-[#4f5752]">Suosittuja osia</p>
+                  <p className="mt-1 text-xl font-black">Jarrut ja suodattimet</p>
                 </div>
-                <div className="rounded-xl bg-slate-900/80 p-4 text-white">
-                  <p className="text-sm text-slate-400">Akut</p>
-                  <p className="text-xl font-black">Ilmainen asennus</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="grid gap-4 md:grid-cols-3">
-          {['Nopea toimitus', 'Laadukkaat merkit', 'Asiakkaan tuki'].map((item) => (
-            <div key={item} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="font-semibold text-slate-900">{item}</p>
-              <p className="mt-1 text-sm text-slate-500">Luotettavasti ja turvallisesti jokaiselle asiakkaalle.</p>
-            </div>
-          ))}
-        </section>
-
-        <section id="tuotteet" className="space-y-4">
-          <div className="flex items-end justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-700">Kategoriat</p>
-              <h2 className="text-2xl font-black text-slate-900">Selaa tuotteita</h2>
-            </div>
-            <a href="#" className="text-sm font-semibold text-orange-500">Näytä kaikki</a>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {categories.map((category) => (
-              <div key={category.name} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1">
-                <div className="text-3xl">{category.icon}</div>
-                <h3 className="mt-3 font-semibold text-slate-900">{category.name}</h3>
-                <p className="mt-1 text-sm text-slate-500">Valikoimassa parhaat vaihtoehdot</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="space-y-4">
-          <div className="flex items-end justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-700">Suosituimmat</p>
-              <h2 className="text-2xl font-black text-slate-900">Featured products</h2>
-            </div>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            {products.map((product) => (
-              <div key={product.name} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">{product.badge}</span>
-                  <button className="rounded-full border border-slate-200 p-2 text-slate-500 hover:text-orange-500"><Heart size={16} /></button>
-                </div>
-                <div className="mt-5 h-28 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200" />
-                <h3 className="mt-5 font-semibold text-slate-900">{product.name}</h3>
-                <p className="mt-1 text-sm text-slate-500">Laadukas ja luotettava valinta kaikille autoilijoille.</p>
-                <div className="mt-4 flex items-center justify-between">
-                  <p className="text-lg font-black text-slate-900">{product.price}</p>
-                  <button className="rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white">Osta</button>
+                <div className="rounded-2xl bg-[#1f6a45] p-4">
+                  <p className="text-sm text-[#dfeee3]">Huolto</p>
+                  <p className="mt-1 text-xl font-black">Öljyt ja nesteet valmiina</p>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </section>
 
-        <section id="merkit" className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-end justify-between">
+        <VehicleSelector />
+
+        <CategoryMenu />
+
+        <section className="rounded-[28px] border border-[#dcefe3] bg-white p-4 shadow-[0_12px_30px_rgba(15,61,46,0.04)] sm:p-6">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-700">Merkit</p>
-              <h2 className="text-2xl font-black text-slate-900">Luotetut tuotemerkit</h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1f6a45]">Suositut tuotteet</p>
+              <h2 className="text-2xl font-black text-[#111111]">Suositut tuotteet</h2>
+            </div>
+            <Link href="/products" className="text-sm font-semibold text-[#1f6a45]">Katso koko valikoima</Link>
+          </div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {products.map((product) => {
+              const Icon = product.icon;
+              return (
+                <article key={product.name} className="rounded-[24px] border border-[#dcefe3] bg-[#fcfdfb] p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="rounded-full bg-[#e9f7ee] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#1f6a45]">{product.stock}</span>
+                    <button className="rounded-full border border-[#dcefe3] p-2 text-[#4f5752] transition hover:border-[#1f6a45] hover:text-[#1f6a45]" aria-label={`Lisää ${product.name} ostoskoriin`}>
+                      <ShoppingCart size={16} />
+                    </button>
+                  </div>
+                  <div className="mt-4 flex h-28 items-center justify-center rounded-[20px] bg-[#e9f7ee] text-[#1f6a45]">
+                    <Icon size={28} />
+                  </div>
+                  <p className="mt-4 text-sm font-semibold text-[#1f6a45]">{product.brand}</p>
+                  <h3 className="mt-1 font-semibold text-[#111111]">{product.name}</h3>
+                  <p className="mt-1 text-sm text-[#4f5752]">Tuotenumero: {product.partNumber}</p>
+                  <p className="mt-3 text-sm text-[#4f5752]">Yhteensopivuus: {product.compatibility}</p>
+                  <div className="mt-4 flex items-end justify-between">
+                    <div>
+                      <p className="text-lg font-black text-[#111111]">{product.price}</p>
+                      {product.previousPrice ? <p className="text-sm text-[#4f5752] line-through">{product.previousPrice}</p> : null}
+                    </div>
+                    <button className="rounded-full bg-[#1f6a45] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#0f3d2e]">Lisää ostoskoriin</button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="rounded-[28px] border border-[#dcefe3] bg-white p-4 shadow-[0_12px_30px_rgba(15,61,46,0.04)] sm:p-6">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1f6a45]">Suositut tuotemerkit</p>
+              <h2 className="text-2xl font-black text-[#111111]">Suositut tuotemerkit</h2>
             </div>
           </div>
-          <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
             {brands.map((brand) => (
-              <div key={brand} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-center font-semibold text-slate-700">
+              <div key={brand} className="rounded-[18px] border border-[#dcefe3] bg-[#f5f7f3] p-4 text-center font-semibold text-[#111111]">
                 {brand}
               </div>
             ))}
           </div>
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-700">Asiakkaiden kokemukset</p>
-            <h2 className="mt-2 text-2xl font-black text-slate-900">Miksi valita AutoOsa.fi</h2>
-            <div className="mt-6 space-y-4">
-              {reviews.map((review) => (
-                <div key={review.name} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                  <div className="flex items-center gap-1 text-orange-500">
-                    {Array.from({ length: 5 }).map((_, index) => (<Star key={index} size={16} fill="currentColor" />))}
+        <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="rounded-[28px] border border-[#dcefe3] bg-[#0f3d2e] p-6 text-white">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#8fe3a8]">Miksi AutoOsa.fi</p>
+            <h2 className="mt-2 text-2xl font-black">Luotettava ja moderni varaosakauppa</h2>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {benefits.map((benefit) => {
+                const Icon = benefit.icon;
+                return (
+                  <div key={benefit.title} className="rounded-[20px] border border-white/15 bg-white/10 p-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-[#8fe3a8]">
+                      <Icon size={18} />
+                    </div>
+                    <h3 className="mt-3 font-semibold">{benefit.title}</h3>
+                    <p className="mt-1 text-sm text-[#dfeee3]">{benefit.text}</p>
                   </div>
-                  <p className="mt-2 text-sm text-slate-600">“{review.text}”</p>
-                  <p className="mt-2 font-semibold text-slate-900">{review.name}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
-          <div className="rounded-[2rem] border border-slate-200 bg-slate-950 p-6 text-white shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-orange-300">Uutiskirje</p>
-            <h2 className="mt-2 text-2xl font-black">Tilaa tarjoukset sähköpostiisi</h2>
-            <p className="mt-3 text-sm text-slate-300">Saat ensimmäisenä uutiset uusista tuotteista ja alennuksista.</p>
-            <div className="mt-6 flex flex-col gap-3">
-              <input className="rounded-xl border border-white/20 bg-white/10 px-4 py-3 outline-none" placeholder="Sähköpostiosoitteesi" />
-              <button className="flex items-center justify-center gap-2 rounded-xl bg-orange-500 px-4 py-3 font-semibold text-white hover:bg-orange-400">
-                Tilaa <ArrowRight size={18} />
-              </button>
+
+          <div className="rounded-[28px] border border-[#dcefe3] bg-white p-6 shadow-[0_12px_30px_rgba(15,61,46,0.04)]">
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#1f6a45]">Uutiskirje</p>
+            <h2 className="mt-2 text-2xl font-black text-[#111111]">Tilaa AutoOsa.fi uutiskirje</h2>
+            <p className="mt-3 text-sm leading-7 text-[#4f5752]">Saat tietoa tarjouksista, uutuuksista ja ajankohtaisista tuotteista. Uutiskirjeen tilaaminen on suunniteltu tulevan integraation tueksi.</p>
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+              <label className="flex-1">
+                <span className="sr-only">Sähköpostiosoite</span>
+                <input className="w-full rounded-full border border-[#dcefe3] bg-[#f5f7f3] px-4 py-3 outline-none" placeholder="Sähköpostiosoitteesi" />
+              </label>
+              <button className="rounded-full bg-[#1f6a45] px-4 py-3 font-semibold text-white transition hover:bg-[#0f3d2e]">Tilaa</button>
             </div>
           </div>
         </section>
-      </section>
+      </div>
 
-      <footer id="yhteystiedot" className="border-t border-slate-200 bg-white/80 py-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 text-sm text-slate-600 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <p>© 2026 AutoOsa.fi. Kaikki oikeudet pidätetään.</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-blue-700">Tietoa meistä</a>
-            <a href="#" className="hover:text-blue-700">Yhteystiedot</a>
-            <a href="#" className="hover:text-blue-700">Tietosuojaseloste</a>
+      <footer id="yhteystiedot" className="border-t border-[#dcefe3] bg-[#0f3d2e] py-8 text-white">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 text-sm text-[#dfeee3] sm:px-6 lg:grid-cols-[1.1fr_0.9fr_0.9fr_0.7fr] lg:px-8">
+          <div>
+            <h3 className="text-lg font-black text-white">AutoOsa.fi</h3>
+            <p className="mt-3 max-w-sm leading-7 text-[#dfeee3]">Suomalainen verkkokauppa auton varaosille, huolto-osille, öljyille ja lisävarusteille.</p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-white">Asiakaspalvelu</h4>
+            <ul className="mt-3 space-y-2">
+              <li><a href="/contact" className="transition hover:text-[#8fe3a8]">Ota yhteyttä</a></li>
+              <li><a href="#" className="transition hover:text-[#8fe3a8]">Usein kysytyt kysymykset</a></li>
+              <li><a href="#" className="transition hover:text-[#8fe3a8]">Toimitus</a></li>
+              <li><a href="#" className="transition hover:text-[#8fe3a8]">Palautukset</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold text-white">AutoOsa.fi</h4>
+            <ul className="mt-3 space-y-2">
+              <li><a href="/about" className="transition hover:text-[#8fe3a8]">Meistä</a></li>
+              <li><a href="#" className="transition hover:text-[#8fe3a8]">Yritystiedot</a></li>
+              <li><a href="/contact" className="transition hover:text-[#8fe3a8]">Yhteystiedot</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold text-white">Seuraa</h4>
+            <div className="mt-3 flex items-center gap-2 text-[#dfeee3]">
+              <Headphones size={16} /> <span>Asiakaspalvelu</span>
+            </div>
           </div>
         </div>
       </footer>

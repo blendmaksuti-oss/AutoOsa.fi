@@ -8,66 +8,91 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  passwordHash  String
-  role          String    @default("customer")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  orders        Order[]
-  reviews       Review[]
-  addresses     Address[]
+  id           String    @id @default(cuid())
+  name         String?
+  email        String    @unique
+  passwordHash String
+  role         String    @default("customer")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  orders       Order[]
+  reviews      Review[]
+  addresses    Address[]
 }
 
 model Category {
-  id        String    @id @default(cuid())
-  name      String    @unique
-  slug      String    @unique
-  products  Product[]
+  id                String            @id @default(cuid())
+  name              String            @unique
+  slug              String            @unique
+  description       String?
+  image             String?
+  icon              String?
+  parentId          String?
+  parent            Category?         @relation("CategoryToCategory", fields: [parentId], references: [id])
+  children          Category[]        @relation("CategoryToCategory")
+  isActive          Boolean           @default(true)
+  sortOrder         Int               @default(0)
+  products          Product[]
+  productCategories ProductCategory[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 }
 
 model Brand {
-  id        String    @id @default(cuid())
-  name      String    @unique
-  slug      String    @unique
-  products  Product[]
+  id       String    @id @default(cuid())
+  name     String    @unique
+  slug     String    @unique
+  products Product[]
 }
 
 model Product {
-  id            String       @id @default(cuid())
-  name          String
-  slug          String       @unique
-  description   String
-  price         Float
-  comparePrice  Float?
-  stock         Int          @default(0)
-  image         String?
-  featured      Boolean      @default(false)
-  bestseller    Boolean      @default(false)
-  newArrival    Boolean      @default(false)
-  categoryId    String
-  category      Category     @relation(fields: [categoryId], references: [id])
-  brandId       String
-  brand         Brand        @relation(fields: [brandId], references: [id])
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  orderItems    OrderItem[]
-  reviews       Review[]
+  id                String                        @id @default(cuid())
+  name              String
+  slug              String                        @unique
+  description       String
+  price             Float
+  comparePrice      Float?
+  stock             Int                           @default(0)
+  image             String?
+  featured          Boolean                       @default(false)
+  bestseller        Boolean                       @default(false)
+  newArrival        Boolean                       @default(false)
+  brandId           String
+  brand             Brand                         @relation(fields: [brandId], references: [id])
+  categoryId        String?
+  category          Category?                     @relation(fields: [categoryId], references: [id])
+  manufacturer      String?
+  productNumber     String?
+  oeNumber          String?
+  createdAt         DateTime                      @default(now())
+  updatedAt         DateTime                      @updatedAt
+  orderItems        OrderItem[]
+  reviews           Review[]
+  compatibilities   ProductVehicleCompatibility[]
+  productCategories ProductCategory[]
+}
+
+model ProductCategory {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  createdAt  DateTime @default(now())
 }
 
 model Order {
-  id            String       @id @default(cuid())
-  userId        String
-  user          User         @relation(fields: [userId], references: [id])
-  status        String       @default("pending")
-  total         Float
-  currency      String       @default("EUR")
+  id                String      @id @default(cuid())
+  userId            String
+  user              User        @relation(fields: [userId], references: [id])
+  status            String      @default("pending")
+  total             Float
+  currency          String      @default("EUR")
   shippingAddressId String?
   billingAddressId  String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  items         OrderItem[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  items             OrderItem[]
 }
 
 model OrderItem {
@@ -92,14 +117,76 @@ model Review {
 }
 
 model Address {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  line1       String
-  line2       String?
-  postalCode  String
-  city        String
-  country     String   @default("Finland")
-  isDefault   Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  line1      String
+  line2      String?
+  postalCode String
+  city       String
+  country    String   @default("Finland")
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model VehicleMake {
+  id        String         @id @default(cuid())
+  name      String         @unique
+  models    VehicleModel[]
+  createdAt DateTime       @default(now())
+}
+
+model VehicleModel {
+  id              String                        @id @default(cuid())
+  name            String
+  makeId          String
+  make            VehicleMake                   @relation(fields: [makeId], references: [id])
+  generations     VehicleGeneration[]
+  compatibilities ProductVehicleCompatibility[]
+  createdAt       DateTime                      @default(now())
+}
+
+model VehicleGeneration {
+  id        String          @id @default(cuid())
+  name      String
+  modelId   String
+  model     VehicleModel    @relation(fields: [modelId], references: [id])
+  years     String[]
+  engines   VehicleEngine[]
+  createdAt DateTime        @default(now())
+}
+
+model VehicleEngine {
+  id              String                        @id @default(cuid())
+  name            String
+  fuelType        String?
+  power           String?
+  generationId    String
+  generation      VehicleGeneration             @relation(fields: [generationId], references: [id])
+  compatibilities ProductVehicleCompatibility[]
+  createdAt       DateTime                      @default(now())
+}
+
+model VehicleCompatibility {
+  id                     String                        @id @default(cuid())
+  name                   String
+  makeId                 String?
+  modelId                String?
+  generationId           String?
+  engineId               String?
+  productCompatibilities ProductVehicleCompatibility[]
+  createdAt              DateTime                      @default(now())
+}
+
+model ProductVehicleCompatibility {
+  id                     String               @id @default(cuid())
+  productId              String
+  product                Product              @relation(fields: [productId], references: [id])
+  vehicleCompatibilityId String
+  vehicleCompatibility   VehicleCompatibility @relation(fields: [vehicleCompatibilityId], references: [id])
+  vehicleModelId         String?
+  vehicleModel           VehicleModel?        @relation(fields: [vehicleModelId], references: [id])
+  vehicleEngineId        String?
+  vehicleEngine          VehicleEngine?       @relation(fields: [vehicleEngineId], references: [id])
+  createdAt              DateTime             @default(now())
 }
